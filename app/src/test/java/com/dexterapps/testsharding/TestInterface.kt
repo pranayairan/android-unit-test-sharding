@@ -1,0 +1,6 @@
+package com.dexterapps.testsharding
+
+interface RoboElectricTests
+interface UnitTests
+interface FastTests
+interface SlowTests

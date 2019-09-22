@@ -1,0 +1,69 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = '1.3.21'
+    repositories {
+        google()
+        jcenter()
+        
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        
+    }
+}
+
+// we need to remove the extra argument otherwise it will throw error since gradle will not recognized
+// to run this specific test ./gradlew :app:testDebug --robolectric
+if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric")) {
+    subprojects
+            .find { it.name == "app" }
+            .tasks
+            .withType(Test)
+            .configureEach {
+                useJUnit {
+                    includeCategories 'com.dexterapps.testsharding.RoboElectricTests'
+                    //excludeCategories if we want to exclude any test
+                }
+            }
+}
+// to run this specific test ./gradlew :app:testDebug --unit
+else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--unit")) {
+    subprojects
+            .find { it.name == "app" }
+            .tasks
+            .withType(Test)
+            .configureEach {
+                useJUnit {
+                    includeCategories 'com.dexterapps.testsharding.UnitTests'
+                    //excludeCategories if we want to exclude any test
+                }
+            }
+}
+// to run this specific test ./gradlew :app:testDebug --fasttest
+else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--fasttest")) {
+    subprojects
+            .find { it.name == "app" }
+            .tasks
+            .withType(Test)
+            .configureEach {
+                useJUnit {
+                    includeCategories 'com.dexterapps.testsharding.FastTests'
+                    //excludeCategories if we want to exclude any test
+                }
+            }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
