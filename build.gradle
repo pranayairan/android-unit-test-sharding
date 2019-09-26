@@ -5,7 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
@@ -19,12 +19,13 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 
 // we need to remove the extra argument otherwise it will throw error since gradle will not recognized
-// to run this specific test ./gradlew :app:testDebug --robolectric
+// to run this specific test ./gradlew :app:testDebugUnitTest --robolectric
+// make sure --robolectric is the first argument.
 if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric")) {
     subprojects
             .find { it.name == "app" }
@@ -37,7 +38,7 @@ if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric"
                 }
             }
 }
-// to run this specific test ./gradlew :app:testDebug --unit
+// to run this specific test ./gradlew :app:testDebugUnitTest --unit
 else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--unit")) {
     subprojects
             .find { it.name == "app" }
@@ -50,7 +51,7 @@ else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--unit"))
                 }
             }
 }
-// to run this specific test ./gradlew :app:testDebug --fasttest
+// to run this specific test ./gradlew :app:testDebugUnitTest --fasttest
 else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--fasttest")) {
     subprojects
             .find { it.name == "app" }
