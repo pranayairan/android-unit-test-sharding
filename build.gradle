@@ -33,7 +33,7 @@ if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric"
             .withType(Test)
             .configureEach {
                 useJUnit {
-                    includeCategories 'com.dexterapps.testsharding.RoboElectricTests'
+                    includeCategories 'com.dexterapps.testsharding.RobolectricTests'
                     //excludeCategories if we want to exclude any test
                 }
             }
