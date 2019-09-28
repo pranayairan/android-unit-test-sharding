@@ -10,7 +10,7 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ActivityController
 
-@Category(RoboElectricTests::class)
+@Category(RobolectricTests::class)
 @RunWith(RobolectricTestRunner::class)
 class FibonacciTextViewTest {
 
