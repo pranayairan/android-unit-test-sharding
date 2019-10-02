@@ -1,3 +1,57 @@
+Full blog post : 
+[https://prandroid.dev/Parallel-unit-tests-in-android/](https://prandroid.dev/Parallel-unit-tests-in-android/)
+
+##  JUnit Categories
+JUnit 4.12 introduced a nifty feature **Categories**. Categories provide us with a mechanism to label and group tests and run these tests either by including or excluding the categories. 
+
+JUnit categories are simple but there is no direct support for it in Gradle or Gradle Android. We need to write a custom Gradle code to make it work. Let's look at the code. 
+
+> You can download all the code discussed in this post from
+> [https://github.com/pranayairan/android-unit-test-sharding](https://github.com/pranayairan/android-unit-test-sharding)
+
+### Marker Interface 
+To represent the categories or label tests, we need to create marker interfaces. This simple interfaces will be will use to classify our tests and run them in parallel. 
+
+```kotlin
+interface RobolectricTests
+
+interface UnitTests
+
+interface FastTests
+
+interface SlowTests
+``` 
+
+> Note: JUnit categories can take any class name as a category, it is
+> not required to create custom interfaces. We can use any predefine
+> classes as well to categorize tests.
+
+### Category Example
+Once we have marker interfaces, it is trivial to add them as categories. To categorize a test annotate it with `@Category` annotation and add interface name. Let's look at some code. 
+
+```kotlin
+ @Test
+ @Category(UnitTests::class)
+ fun testConvertFahrenheitToCelsius() {
+     val actual = ConverterUtil.convertCelsiusToFahrenheit(100F)
+     val expected = 212f
+     
+     assertEquals("Conversion from celsius to fahrenheit failed",
+         expected.toDouble(), actual.toDouble(), 0.001)
+ }
+```
+We can add many categories to single method or add categories at class level. 
+
+```kotlin
+ @Category(FastTests::class)  
+ class ConverterUtilTest {
+    @Test  
+    @Category(FastTests::class,UnitTests::class)  
+    fun testConvertCelsiusToFahrenheit() {
+    }
+ }
+```
+
 > `@Category` annotation is part of JUnit experiemental package
 > `org.junit.experimental.categories.Category` 
 
