@@ -24,8 +24,51 @@ allprojects {
 }
 
 // we need to remove the extra argument otherwise it will throw error since gradle will not recognized
-// to run this specific test ./gradlew :app:testDebugUnitTest --robolectric
+// to run this specific test for module app ./gradlew :app:testDebugUnitTest --robolectric
+// to run for all modules ./gradlew testDebugUnitTest --robolectric
 // make sure --robolectric is the first argument.
+if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric")) {
+    for (Project project : subprojects) {
+        project.tasks
+                .withType(Test)
+                .configureEach {
+                    useJUnit {
+                        includeCategories 'com.dexterapps.testsharding.RobolectricTests'
+                        //excludeCategories if we want to exclude any test
+                    }
+                }
+    }
+}
+// to run this specific test ./gradlew :app:testDebugUnitTest --unit
+else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--unit")) {
+    for (Project project : subprojects) {
+        project.tasks
+                .withType(Test)
+                .configureEach {
+                    useJUnit {
+                        includeCategories 'com.dexterapps.testsharding.UnitTests'
+                        //excludeCategories if we want to exclude any test
+                    }
+                }
+    }
+}
+// to run this specific test ./gradlew :app:testDebugUnitTest --fasttest
+else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--fasttest")) {
+    for (Project project : subprojects) {
+        project.tasks
+                .withType(Test)
+                .configureEach {
+                    useJUnit {
+                        includeCategories 'com.dexterapps.testsharding.FastTests'
+                        //excludeCategories if we want to exclude any test
+                    }
+                }
+    }
+}
+
+// if we want to add sharding in just some modules then add this in that modules build.gradle
+// replace "app" with module name.
+/*
 if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric")) {
     subprojects
             .find { it.name == "app" }
@@ -38,32 +81,7 @@ if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--robolectric"
                 }
             }
 }
-// to run this specific test ./gradlew :app:testDebugUnitTest --unit
-else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--unit")) {
-    subprojects
-            .find { it.name == "app" }
-            .tasks
-            .withType(Test)
-            .configureEach {
-                useJUnit {
-                    includeCategories 'com.dexterapps.testsharding.UnitTests'
-                    //excludeCategories if we want to exclude any test
-                }
-            }
-}
-// to run this specific test ./gradlew :app:testDebugUnitTest --fasttest
-else if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--fasttest")) {
-    subprojects
-            .find { it.name == "app" }
-            .tasks
-            .withType(Test)
-            .configureEach {
-                useJUnit {
-                    includeCategories 'com.dexterapps.testsharding.FastTests'
-                    //excludeCategories if we want to exclude any test
-                }
-            }
-}
+*/
 
 task clean(type: Delete) {
     delete rootProject.buildDir
